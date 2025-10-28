@@ -1,0 +1,2 @@
+step1:nvcc final.cu -o final
+step2:final.exe
