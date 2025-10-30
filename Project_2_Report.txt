@@ -1,0 +1,17 @@
+
+The code provided uses MPI (Message Passing Interface) to parallelize the task of calculating forces between particles across multiple processes. 
+This approach divides the workload among the processes to achieve load balancing, so each process only handles a subset of particles instead of all particles.
+
+In this code, each process calculates the force acting on its assigned range of particles based on their positions relative to all other particles.
+The calculation follows the formula: force = CONST1 / distance^3 - CONST2 * SIGN(distance) / (distance^2), where distance is the positional difference 
+between two particles. The constants CONST1 and CONST2 help determine the strength and direction of the force.
+
+To manage the workload efficiently, the program divides the particles into segments (or ranges) that are distributed evenly across the available processes.
+Each process has a `start_index` and `end_index` that determine its segment of particles, ensuring that the workload remains balanced among processes.
+
+After each process has completed its calculations, the results (forces) from all processes are combined using an MPI function, `MPI_Allreduce`.
+This function aggregates the computed forces across processes with a time complexity of O(n log_2 p), where `n` is the total number of particles and `p` is the number of processes.
+This method ensures that communication cost does not become a bottleneck as the number of processes grows, allowing the solution to remain scalable.
+
+The root process then prints the final accumulated force values for each particle. This design effectively minimizes the computation load on individual processes
+while keeping the communication cost low, making the solution efficient for scenarios involving a large number of particles and processors.
